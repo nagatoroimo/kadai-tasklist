@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   before_action :set_params, only: [:show, :edit, :update, :destroy]
   before_action :require_user_logged_in, only: [:index, :show, :new, :create, :edit, :update, :destroy]
-  before_action :authenticate_user, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+  before_action :authenticate_user, only: [:show, :edit, :update, :destroy]
   
   def index
     @task = Task.where(user_id: current_user.id).page(params[:page]).per(5)
@@ -60,7 +60,6 @@ class TasksController < ApplicationController
     if @task.user_id != current_user.id.to_s
       flash[:success] = "権限がありません"
       redirect_to root_url
-    else
     end
   end
 end
