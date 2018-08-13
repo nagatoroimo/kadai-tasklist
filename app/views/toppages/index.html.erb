@@ -1,0 +1,35 @@
+<% if logged_in? %>
+  <p>タスク一覧</p>
+  <% if @task.any? %>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>ステータス</th>
+          <th>タスク</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @task.each do |task| %>
+        <tr>
+          <td><%= link_to task.id, task_path(task) %></td>
+          <td><%= task.status %></td>
+          <td><%= task.content %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <div>
+      <%= paginate @task %>
+    </div>
+  <% end %>
+  <%= link_to "新規タスクを登録する", new_task_path, class: "btn btn-primary" %>
+<% else %>
+  <div class="center jumbotron">
+    <div class="text-center">
+      <h1>Welcome to the Tasklist</h1>
+      <%= link_to 'タスク管理をはじめよう', signup_path, class: 'btn btn-lg btn-primary' %>
+    </div>
+  </div>  
+<% end %>
