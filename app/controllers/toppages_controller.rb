@@ -2,7 +2,11 @@ class ToppagesController < ApplicationController
 
   def index
     if logged_in?
-      @task = Task.where(user_id: current_user.id).page(params[:page]).per(5)
+      @user = current_user
+      @task = current_user.tasks.build  # form_for 用
+      @task = current_user.tasks.order(created_at: :desc).page(params[:page])
+      
+      #@task = current_user.tasks.page(params[:page]).per(5)
     end
   end
   

@@ -1,10 +1,11 @@
 class TasksController < ApplicationController
   before_action :set_params, only: [:show, :edit, :update, :destroy]
   before_action :require_user_logged_in, only: [:index, :show, :new, :create, :edit, :update, :destroy]
-  before_action :authenticate_user, only: [:show, :edit, :update, :destroy]
+  before_action :correct_user, only: [:show, :edit, :update, :destroy]
   
   def index
-    @task = Task.where(user_id: current_user.id).page(params[:page]).per(5)
+    #@task = Task.where(user_id: current_user.id).page(params[:page]).per(5)
+    @task = current_user.tasks.page(params[:page]).per(5) #tasksメソッドの戻り値が配列になる
   end
   
   def show
@@ -15,7 +16,7 @@ class TasksController < ApplicationController
   end
 
   def create
-    @task = Task.new(params_task)
+    @task = current_user.tasks.build(params_task)
     
     if @task.save
       flash[:susscess] = "タスクを登録しました"
@@ -53,12 +54,12 @@ class TasksController < ApplicationController
   end
 
   def params_task
-    params.require(:task).permit(:content, :status, :user_id)
+    params.require(:task).permit(:content, :status)
   end
   
-  def authenticate_user
-    if @task.user_id != current_user.id.to_s
-      flash[:success] = "権限がありません"
+  def correct_user
+    @task = current_user.tasks.find_by(id: params[:id])
+    unless @task
       redirect_to root_url
     end
   end
